@@ -16,7 +16,6 @@ declare type User = {
 }
 
 declare type LoginResponse = {
-
     user : User
 }
 

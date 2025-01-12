@@ -9,6 +9,9 @@ export const authOption: NextAuthOptions = {
         signIn : '/login',
         error : '/login'
     },
+    session :{
+        strategy : 'jwt'
+       },
     providers : [
         Credentials({
             name : 'Credentials',
@@ -35,14 +38,17 @@ export const authOption: NextAuthOptions = {
                 }
             )
              
-                const payload:ApiResponse<LoginResponse> = await response.json();
+                const payload = await response.json();
+
                 if(payload?.message === 'success'){
                     console.log('payload is here from if', payload)
                     return {
                         
-                       id : payload?.user?.user?._id,
-                       token : payload.token,
-                        ...payload.user.user
+                        id : payload?.user?._id,
+                        token : payload?.token,
+                        
+                        ...payload?.user
+
                     }
                 }
                 throw new Error (payload.message || 'Incrroect email or password!!')
@@ -51,8 +57,11 @@ export const authOption: NextAuthOptions = {
         }
     })
     ],
+    
     callbacks : {
+        
         jwt : ({token , user})=>{
+            
           if(user) {
             token.token = user.token;
             token._id = user._id;
@@ -68,8 +77,11 @@ export const authOption: NextAuthOptions = {
             token.passwordResetExpires= user.passwordResetExpires;
             token.resetCodeVerified= user.resetCodeVerified;
             token.passwordChangedAt= user.passwordChangedAt;
+            
           } 
-          return token    
+          return token;
+          
+             
         },
         session : ({session , token})=>{
             session._id = token._id;
@@ -85,8 +97,8 @@ export const authOption: NextAuthOptions = {
             session.passwordResetExpires= token.passwordResetExpires;
             session.resetCodeVerified= token.resetCodeVerified;
             session.passwordChangedAt= token.passwordChangedAt;
-
             return session
         }
+        
     }
 }

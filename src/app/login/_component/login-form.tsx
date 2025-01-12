@@ -6,8 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import * as Yup from 'yup';
-
+import * as Yup from "yup";
 
 export default function LoginForm() {
   // variables
@@ -15,15 +14,18 @@ export default function LoginForm() {
   const pathName = usePathname();
   // validation schema
   const validationSchema = Yup.object().shape({
-    email : Yup.string().min(1).email('Email is invalid').required('Email  is required'), 
-    password : Yup.string().min(1).required('Password name is required'), 
-  })
-  
+    email: Yup.string()
+      .min(1)
+      .email("Email is invalid")
+      .required("Email  is required"),
+    password: Yup.string().min(1).required("Password name is required"),
+  });
+
   // states
   const [error, setError] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  
+  const [showPassword, setShowPassword] = useState<boolean>(true);
+
   // functions
   const handleLogin = async (values: LoginForm) => {
     setIsLoading(true);
@@ -31,18 +33,26 @@ export default function LoginForm() {
       ...values,
       redirect: false,
     });
-    
+
     // if login is successfull
     if (response?.ok) {
-      window.location.href = pathName == '/login'? '/' :pathName
-      
+      window.location.href = pathName == "/login" ? "/" : pathName;
+
       setIsLoading(false);
-    } 
-    
-     // if login is successfull
+    }
+
+    // if login is successfull
     else {
       setError(response?.error || "Login error please try again");
       setIsLoading(false);
+    }
+  };
+
+  const togglePassword = () => {
+    if (showPassword === true) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
     }
   };
 
@@ -62,35 +72,71 @@ export default function LoginForm() {
         <h3 className="font-bold text-2xl">Sign IN</h3>
 
         {/* form body */}
-        <form onSubmit={formik.handleSubmit} className="pt-8">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="flex flex-col space-y-4"
+        >
           {/* error from the backend */}
           <p className="text-red-500 pb-2">{error}</p>
+          
           {/* email input */}
-          <div className="border mb-8 px-2 rounded-lg py-3 ">
+          <div className="">
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.email}
-              className="w-full "
+              className={`${
+                formik.errors.email && formik.touched.email
+                  ? "border-red-300"
+                  : ""
+              } w-full rounded-lg border px-2  py-3`}
               placeholder="Email"
               type="email"
               id="email"
               name="email"
             />
+            {/* validation feed back for email*/}
+            {formik?.errors?.email && formik.touched.email ? (
+              <p className="pt-2 text-red-400">{formik.errors.email}</p>
+            ) : (
+              ""
+            )}
           </div>
 
-          {/* pasword input */}
-          <div className="border  px-2 rounded-lg py-3">
+          {/* password input */}
+          <div
+            className={`${
+              formik.errors.password && formik.touched.password
+                ? "border-red-300"
+                : ""
+            } rounded-lg border px-2  py-3 flex items-center justify-between`}
+          >
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.password}
-              placeholder="password"
-              type="password"
+              placeholder="Password"
+              className={` w-full `}
+              type={!showPassword ? "text" : "password"}
               id="password"
               name="password"
             />
+            <Image
+              onClick={togglePassword}
+              className="cursor-pointer"
+              src={"/assests/images/eye-vector.png"}
+              width={20}
+              height={0}
+              alt="eye vector"
+            />
           </div>
+          {/* validation feed back for password*/}
+          {formik?.errors?.password && formik.touched.password ? (
+            <p className="pt-2 text-red-400">{formik.errors.password}</p>
+          ) : (
+            ""
+          )}
+         
           <Link
             className="text-[#4461F2] block text-end pt-2"
             href={"forget-password"}

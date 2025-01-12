@@ -7,8 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import * as Yup from 'yup';
-
+import * as Yup from "yup";
 
 export default function RegisterForm() {
   // variables and hooks
@@ -47,21 +46,39 @@ export default function RegisterForm() {
       .required("Phone number name is required"),
   });
   // states
-  const [isLoading , setIsLoading] = useState<boolean>(false);
-  const [error , setError] = useState<string | null>(null);
-  
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(true);
+  const [showRepassword, setreReShowPassword] = useState(true);
+
   // functions
   const handleRegister = async (values: RegisterForm) => {
+    console.log(values, "hello");
     setIsLoading(true);
     setError(null);
     const response = await registerAction(values);
-      if(response.message === 'success'){
-        toast.success('Register is successfull please login to continue');
-        router.push('/login');
-      }
-   
-      setError(response.message);
-      setIsLoading(false);
+    if (response.message === "success") {
+      toast.success("Register is successfull please login to continue");
+      router.push("/login");
+    }
+
+    setError(response.message);
+    setIsLoading(false);
+  };
+
+  const togglePassword = () => {
+    if (showPassword === true) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
+    }
+  };
+  const toggleRepassword = () => {
+    if (showRepassword === true) {
+      setShowPassword(false);
+    } else {
+      setShowPassword(true);
+    }
   };
 
   const formik = useFormik({
@@ -83,104 +100,204 @@ export default function RegisterForm() {
         <h3 className="text-center md:text-start font-bold text-2xl">
           Sign Up
         </h3>
-        <form onSubmit={formik.handleSubmit} className="pt-4 ">
+        <form
+          onSubmit={formik.handleSubmit}
+          className=" flex flex-col space-y-4 "
+        >
           {/* error from the backend */}
           <p className="text-red-500 pb-2">{error}</p>
-            {/* frist name input */}
-            <div className="border mb-8 px-2 rounded-lg py-3 ">
+          {/* username name input */}
+          <div className="   ">
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.username}
-              className="w-full "
+              className={`${
+                formik.errors.username && formik.touched.username
+                  ? "border-red-300"
+                  : ""
+              } w-full rounded-lg border px-2  py-3`}
               placeholder="User Name"
               type="text"
               id="username"
               name="username"
             />
+            {/* validation feed back for user name*/}
+            {formik?.errors?.username && formik.touched.username ? (
+              <p className="pt-2 text-red-400">{formik.errors.username}</p>
+            ) : (
+              ""
+            )}
           </div>
+
           {/* frist name input */}
-          <div className="border mb-8 px-2 rounded-lg py-3 ">
+          <div className="   ">
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.firstName}
-              className="w-full "
+              className={`${
+                formik.errors.firstName && formik.touched.firstName
+                  ? "border-red-300"
+                  : ""
+              } w-full rounded-lg border px-2  py-3`}
               placeholder="Frist Name"
               type="text"
               id="firstName"
               name="firstName"
             />
+            {/* validation feed back for first name*/}
+            {formik?.errors?.firstName && formik.touched.firstName ? (
+              <p className="pt-2 text-red-400">{formik.errors.firstName}</p>
+            ) : (
+              ""
+            )}
           </div>
 
           {/* last name input  */}
-          <div className="border mb-8 px-2 rounded-lg py-3 ">
+          <div className="   ">
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.lastName}
-              className="w-full "
+              className={`${
+                formik.errors.lastName && formik.touched.lastName
+                  ? "border-red-300"
+                  : ""
+              } w-full rounded-lg border px-2  py-3`}
               placeholder="Last Name"
               type="text"
               id="lastName"
               name="lastName"
             />
+            {/* validation feed back for last name*/}
+            {formik?.errors?.lastName && formik.touched.lastName ? (
+              <p className="pt-2 text-red-400">{formik.errors.lastName}</p>
+            ) : (
+              ""
+            )}
           </div>
 
           {/* email input */}
-          <div className="border mb-8 px-2 rounded-lg py-3 ">
+          <div className="">
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.email}
-              className="w-full "
+              className={`${
+                formik.errors.email && formik.touched.email
+                  ? "border-red-300"
+                  : ""
+              } w-full rounded-lg border px-2  py-3`}
               placeholder="Email"
               type="email"
               id="email"
               name="email"
             />
+            {/* validation feed back for email*/}
+            {formik?.errors?.email && formik.touched.email ? (
+              <p className="pt-2 text-red-400">{formik.errors.email}</p>
+            ) : (
+              ""
+            )}
           </div>
+          
 
-          {/* pasword input */}
-          <div className="border mb-8 px-2 rounded-lg py-3">
+          {/* password input */}
+          <div
+            className={`${
+              formik.errors.password && formik.touched.password
+                ? "border-red-300"
+                : ""
+            } rounded-lg border px-2  py-3 flex items-center justify-between`}
+          >
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.password}
               placeholder="Password"
-              className="w-full "
-              type="password"
+              className={` w-full `}
+              type={!showPassword ? "text" : "password"}
               id="password"
               name="password"
             />
+            <Image
+              onClick={togglePassword}
+              className="cursor-pointer"
+              src={"/assests/images/eye-vector.png"}
+              width={20}
+              height={0}
+              alt="eye vector"
+            />
           </div>
+          {/* validation feed back for password*/}
+          {formik?.errors?.password && formik.touched.password ? (
+            <p className="pt-2 text-red-400">{formik.errors.password}</p>
+          ) : (
+            ""
+          )}
 
-          {/* confirm pasword input */}
-          <div className="border mb-8 px-2 rounded-lg py-3">
+          {/* confirm psasword input */}
+          <div
+            className={`${
+              formik.errors.rePassword && formik.touched.rePassword
+                ? "border-red-300"
+                : ""
+            } rounded-lg border px-2  py-3 flex items-center justify-between`}
+          >
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.rePassword}
               placeholder="Confirm Password"
-              className="w-full "
-              type="password"
+              className={`${
+                formik.errors.rePassword && formik.touched.rePassword
+                  ? "border-red-300"
+                  : ""
+              } w-full `}
+              type={!showPassword ? "text" : "password"}
               id="rePassword"
               name="rePassword"
             />
+            <Image
+              onClick={toggleRepassword}
+              className="cursor-pointer"
+              src={"/assests/images/eye-vector.png"}
+              width={20}
+              height={0}
+              alt="eye vector"
+            />
+
+            {/* validation feed back for confirm password*/}
           </div>
+          {formik?.errors?.rePassword && formik.touched.rePassword ? (
+            <p className="pt-2 text-red-400">{formik.errors.rePassword}</p>
+          ) : (
+            ""
+          )}
 
           {/* phone input */}
-          <div className="border px-2 rounded-lg py-3">
+          <div className=" ">
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.phone}
               placeholder="Phone Number"
-              className="w-full"
+              className={`${
+                formik.errors.phone && formik.touched.phone
+                  ? "border-red-300"
+                  : ""
+              } w-full rounded-lg border px-2  py-3`}
               type="tel"
               id="phone"
               name="phone"
             />
+            {/* validation feed back for phone*/}
+            {formik?.errors?.phone && formik.touched.phone ? (
+              <p className="pt-2 text-red-400">{formik.errors.phone}</p>
+            ) : (
+              ""
+            )}
           </div>
 
           <p className=" block text-center pt-2">
@@ -190,7 +307,7 @@ export default function RegisterForm() {
             </Link>
           </p>
           <div className="mt-9 rounded-full shadow-lg">
-            <Button>{!isLoading? 'Sign Up' : 'loading...'}</Button>
+            <Button>{!isLoading ? "Sign Up" : "loading..."}</Button>
           </div>
         </form>
         <div className="">

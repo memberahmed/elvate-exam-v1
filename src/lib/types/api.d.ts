@@ -1,7 +1,7 @@
 declare type SuccessfullResponse<T> = {
     message :  "success",
     token : string
-    user : T,
+    data : T,
 }
 declare type ErrorResponse = {
     message : 'fail | error',

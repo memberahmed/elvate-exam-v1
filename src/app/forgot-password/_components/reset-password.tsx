@@ -1,24 +1,40 @@
 "use client";
 import Button from "@/components/common/buttons/buttons";
+import { forgotPasswordContext } from "@/components/providers/components/forgot-password-provider";
+import resetNewPassword from "@/lib/actions/rest-email-password.action";
 import { useFormik } from "formik";
-import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useState } from "react";
+import toast from "react-hot-toast";
 import * as Yup from "yup";
 
-export default function LoginForm() {
-  // variables
+export default function ResetPasswordForm() {
+ 
+    // context
+  const context = useContext(forgotPasswordContext);
 
-  const pathName = usePathname();
+  if (!context) {
+    return null; // or handle the null case appropriately
+  }
+
+  const {
+    setCurrentStep
+    
+  } = context;
+ 
+    // variables
+
+  const router = useRouter();
   // validation schema
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .min(1)
       .email("Email is invalid")
       .required("Email  is required"),
-    password: Yup.string().min(1).required("Password name is required"),
+    newPassword : Yup.string().min(6 , 'Minmium length should 6 chracters').matches(/(?=.*[A-Z])(?=.*\d)[A-Za-z\d@#$%^&+=!]{6,50}$/ , 'Password must have uppercase charcter , a number and special character')
+    
   });
 
   // states
@@ -27,24 +43,26 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(true);
 
   // functions
-  const handleLogin = async (values: LoginForm) => {
+  const handlresetPassword = async (values: ResetPasswordForm) => {
     setIsLoading(true);
-    const response = await signIn("credentials", {
-      ...values,
-      redirect: false,
-    });
-
-    // if login is successfull
-    if (response?.ok) {
-      window.location.href = pathName == "/login" ? "/" : pathName;
-
+    const payload: ResetPasswordResponse = await resetNewPassword(values);
+    console.log("hello");
+    console.log(payload);
+    //    if the email is verified
+    if (payload.message === "success") {
+      toast("Password change successfully please login to continue");
       setIsLoading(false);
+      setCurrentStep(1);
+      router.push("/login");
     }
 
-    // if login is successfull
+    //    if the email is not verified
     else {
-      setError(response?.error || "Login error please try again");
       setIsLoading(false);
+      setCurrentStep(1);
+      setError(
+        payload.message || "Something went wrong please try agian later"
+      );
     }
   };
 
@@ -59,17 +77,17 @@ export default function LoginForm() {
   const formik = useFormik({
     initialValues: {
       email: "",
-      password: "",
+      newPassword: "",
     },
     validationSchema,
-    onSubmit: handleLogin,
+    onSubmit: handlresetPassword,
   });
 
   return (
     <main>
       <section className="max-w-[410px] ps-2">
         {/* header */}
-        <h3 className="font-bold text-2xl">Sign IN</h3>
+        <h3 className="font-bold text-2xl">Set a Password</h3>
 
         {/* form body */}
         <form
@@ -106,7 +124,7 @@ export default function LoginForm() {
           {/* password input */}
           <div
             className={`${
-              formik.errors.password && formik.touched.password
+              formik.errors.newPassword && formik.touched.newPassword
                 ? "border-red-300"
                 : ""
             } rounded-lg border px-2  py-3 flex items-center justify-between`}
@@ -114,12 +132,12 @@ export default function LoginForm() {
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.password}
+              value={formik.values.newPassword}
               placeholder="Password"
               className={` w-full `}
               type={!showPassword ? "text" : "password"}
               id="password"
-              name="password"
+              name="newPassword"
             />
             <Image
               onClick={togglePassword}
@@ -131,22 +149,22 @@ export default function LoginForm() {
             />
           </div>
           {/* validation feed back for password*/}
-          {formik?.errors?.password && formik.touched.password ? (
-            <p className="pt-2 text-red-400">{formik.errors.password}</p>
+          {formik?.errors?.newPassword && formik.touched.newPassword ? (
+            <p className="pt-2 text-red-400">{formik.errors.newPassword}</p>
           ) : (
             ""
           )}
 
           <Link
             className="text-[#4461F2] block text-end pt-2"
-            href={"forgot-password"}  
+            href={"forgot-password"}
           >
             Recover Password ?
           </Link>
 
           {/* submit button */}
           <div className="mt-9 rounded-full shadow-lg">
-            <Button>{!isLoading ? "Sign in" : "loading..."} </Button>
+            <Button>{!isLoading ? "Reset Password" : "loading..."} </Button>
           </div>
         </form>
         <div className="">

@@ -1,3 +1,4 @@
+import ForgotPasswordProvider from "./components/forgot-password-provider";
 import NextAuthProvider from "./components/next-auth-provider";
 
 type ProvidersProps = {
@@ -6,7 +7,9 @@ type ProvidersProps = {
 export default function Providers({ children }: ProvidersProps) {
   return (
     <>
-      <NextAuthProvider>{children}</NextAuthProvider>
+      <NextAuthProvider>
+        <ForgotPasswordProvider>{children}</ForgotPasswordProvider>
+      </NextAuthProvider>
     </>
   );
 }

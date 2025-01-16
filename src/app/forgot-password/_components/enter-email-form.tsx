@@ -1,75 +1,71 @@
 "use client";
+
 import Button from "@/components/common/buttons/buttons";
+import { forgotPasswordContext } from "@/components/providers/components/forgot-password-provider";
+import enterEmail from "@/lib/actions/enter-emil.action";
 import { useFormik } from "formik";
-import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import * as Yup from "yup";
+export default function EnterEmailForm() {
+  // context
+  const context = useContext(forgotPasswordContext);
 
-export default function LoginForm() {
-  // variables
+  if (!context) {
+    return null; // or handle the null case appropriately
+  }
 
-  const pathName = usePathname();
-  // validation schema
+  const {
+    handlNextStep,
+    getUserEamil,
+    userEmail,
+  } = context;
+
+  // states
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // validtion schema
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .min(1)
       .email("Email is invalid")
       .required("Email  is required"),
-    password: Yup.string().min(1).required("Password name is required"),
   });
 
-  // states
-  const [error, setError] = useState<null | string>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(true);
-
-  // functions
-  const handleLogin = async (values: LoginForm) => {
+  // funtion sent the email to back to receive an otp code
+  const hanldSubmit = async (values: EmailForm) => {
+    setError(null);
     setIsLoading(true);
-    const response = await signIn("credentials", {
-      ...values,
-      redirect: false,
-    });
-
-    // if login is successfull
-    if (response?.ok) {
-      window.location.href = pathName == "/login" ? "/" : pathName;
-
+    const payload: ApiResponse<ReceiveOtpRespone> = await enterEmail(values);
+    console.log(payload)
+    // if the email is registed befor
+    if (payload?.message === "success") {
+      // the getUserEamil  is to get user emil to resend the email again to the backend
+      getUserEamil(values);
+      console.log('user email' ,  userEmail);
+      handlNextStep();
       setIsLoading(false);
     }
 
-    // if login is successfull
-    else {
-      setError(response?.error || "Login error please try again");
-      setIsLoading(false);
-    }
+    setError(payload?.message);
+    setIsLoading(false);
   };
 
-  const togglePassword = () => {
-    if (showPassword === true) {
-      setShowPassword(false);
-    } else {
-      setShowPassword(true);
-    }
-  };
-
-  const formik = useFormik({
+  let formik = useFormik({
     initialValues: {
       email: "",
-      password: "",
     },
+    onSubmit: hanldSubmit,
     validationSchema,
-    onSubmit: handleLogin,
   });
 
   return (
     <main>
       <section className="max-w-[410px] ps-2">
         {/* header */}
-        <h3 className="font-bold text-2xl">Sign IN</h3>
+        <h3 className="font-bold pt-5 text-2xl">Forgot your password?</h3>
 
         {/* form body */}
         <form
@@ -103,50 +99,16 @@ export default function LoginForm() {
             )}
           </div>
 
-          {/* password input */}
-          <div
-            className={`${
-              formik.errors.password && formik.touched.password
-                ? "border-red-300"
-                : ""
-            } rounded-lg border px-2  py-3 flex items-center justify-between`}
-          >
-            <input
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.password}
-              placeholder="Password"
-              className={` w-full `}
-              type={!showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-            />
-            <Image
-              onClick={togglePassword}
-              className="cursor-pointer"
-              src={"/assests/images/eye-vector.png"}
-              width={20}
-              height={0}
-              alt="eye vector"
-            />
-          </div>
-          {/* validation feed back for password*/}
-          {formik?.errors?.password && formik.touched.password ? (
-            <p className="pt-2 text-red-400">{formik.errors.password}</p>
-          ) : (
-            ""
-          )}
-
           <Link
             className="text-[#4461F2] block text-end pt-2"
-            href={"forgot-password"}  
+            href={"forgot-password"}
           >
             Recover Password ?
           </Link>
 
           {/* submit button */}
           <div className="mt-9 rounded-full shadow-lg">
-            <Button>{!isLoading ? "Sign in" : "loading..."} </Button>
+            <Button>{!isLoading ? "Receive Code" : "loading..."} </Button>
           </div>
         </form>
         <div className="">

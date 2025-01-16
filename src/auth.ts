@@ -38,16 +38,15 @@ export const authOption: NextAuthOptions = {
                 }
             )
              
-                const payload = await response.json();
+                const payload:ApiResponse<LoginResponse> = await response.json();
 
                 if(payload?.message === 'success'){
                     console.log('payload is here from if', payload)
                     return {
                         
-                        id : payload?.user?._id,
+                        id : payload?.data.user?._id,
                         token : payload?.token,
-                        
-                        ...payload?.user
+                        ...payload?.data.user
 
                     }
                 }

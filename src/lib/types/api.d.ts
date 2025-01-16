@@ -5,7 +5,7 @@ declare type SuccessfullResponse<T> = {
 }
 declare type ErrorResponse = {
     message : 'fail | error',
-    code : number
+    code : number 
    
 }
 

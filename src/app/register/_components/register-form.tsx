@@ -49,7 +49,7 @@ export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(true);
-  const [showRepassword, setreReShowPassword] = useState(true);
+  const [showRepassword, setShowRepassword] = useState(true);
 
   // functions
   const handleRegister = async (values: RegisterForm) => {
@@ -77,7 +77,7 @@ export default function RegisterForm() {
     if (showRepassword === true) {
       setShowPassword(false);
     } else {
-      setShowPassword(true);
+      setShowRepassword(true);
     }
   };
 

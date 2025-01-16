@@ -44,9 +44,9 @@ export const authOption: NextAuthOptions = {
                     console.log('payload is here from if', payload)
                     return {
                         
-                        id : payload?.data.user?._id,
+                        id : payload?.data?.user?._id,
                         token : payload?.token,
-                        ...payload?.data.user
+                        ...payload?.data?.user
 
                     }
                 }

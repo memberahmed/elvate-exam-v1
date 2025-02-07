@@ -5,9 +5,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --main-color : #3151f1;
-  --main-background : #4461F2;
-  --muted-text : #696F79
+  --main-color: #3151f1;
+  --main-background: #4461f2;
+  --muted-text: #696f79;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,105 +28,68 @@ body {
     text-wrap: balance;
   }
 }
-input:focus , button:focus{
+input:focus,
+button:focus {
   outline: none;
 }
 button:disabled {
-  opacity: .5;
+  opacity: 0.5;
 }
-.active{
-  border: 1px solid  #E0E0E9;
-  box-shadow: 0px 10px 10px 0px #4461F20D;
+.active {
+  border: 1px solid #e0e0e9;
+  box-shadow: 0px 10px 10px 0px #4461f20d;
   border-radius: 15px;
-  
 }
 .label.selected {
-  background-color: #CCD7EB; /* Light blue */
-
-}
-.container{
-  
-  margin: auto;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-left:auto ;
-  margin-right: auto;
-}
-/* small */
-@media(min-width:768px){
-  .container{
-      width: 750px;
-  }
-}
-/* medium */
-@media(min-width:992px){
-  .container{
-      width: 970px;
-  }
-}
-/* large */
-@media(min-width:1200px){
-  .container{
-      width: 1170px;
-  }
+  background-color: #ccd7eb; /* Light blue */
 }
 
-@media(max-width : 768px){
-  .logo-elvate{
-    width: 83px;
-    height: 15px;
-  }
-}
-.toggle{
+.toggle {
   position: relative;
   display: inline-block;
 }
-.toggle::before{
-  content: '';
+.toggle::before {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 2px;
   height: 30px;
-  background-color: #4461F2;
-  
-
+  background-color: #4461f2;
 }
-.continue-with{
+.continue-with {
   position: relative;
   display: flex;
   justify-content: center;
   padding: 15px;
   color: #7f6c6c;
-
 }
 
-.continue-with::before , .continue-with::after{
-  content: '';
+.continue-with::before,
+.continue-with::after {
+  content: "";
   position: absolute;
   top: 50%;
-  width:125px;
+  width: 125px;
   height: 1px;
   background-color: #7f6c6c;
-
 }
-.continue-with::after{
-  
-right: 4px;
+.continue-with::after {
+  right: 4px;
 }
-.continue-with::before{
-  
+.continue-with::before {
   left: 4px;
-  
-  }
+}
 
-  @media(max-width: 998px){
-    .continue-with::before , .continue-with::after{
-      width:80px;
-    }
+@media (max-width: 998px) {
+  .continue-with::before,
+  .continue-with::after {
+    width: 80px;
   }
-  @media(max-width: 768px){
-    .continue-with::before , .continue-with::after{
-      width:70px;
-    }
+}
+@media (max-width: 768px) {
+  .continue-with::before,
+  .continue-with::after {
+    width: 70px;
   }
+}

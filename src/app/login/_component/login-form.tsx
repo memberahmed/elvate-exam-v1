@@ -109,21 +109,21 @@ export default function LoginForm() {
               formik.errors.password && formik.touched.password
                 ? "border-red-300"
                 : ""
-            } rounded-lg border px-2  py-3 flex items-center justify-between`}
+            } rounded-lg border flex items-center justify-between`}
           >
             <input
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.password}
               placeholder="Password"
-              className={` w-full `}
+              className={` w-full rounded-lg px-2  py-3`}
               type={!showPassword ? "text" : "password"}
               id="password"
               name="password"
             />
             <Image
               onClick={togglePassword}
-              className="cursor-pointer"
+              className="cursor-pointer "
               src={"/assests/images/eye-vector.png"}
               width={20}
               height={0}
@@ -139,13 +139,13 @@ export default function LoginForm() {
 
           <Link
             className="text-[#4461F2] block text-end pt-2"
-            href={"forgot-password"}  
+            href={"forgot-password"}
           >
             Recover Password ?
           </Link>
 
           {/* submit button */}
-          <div className="mt-9 rounded-full shadow-lg">
+          <div className="mt-9 flex w-full bg-red-300 rounded-full shadow-lg">
             <Button>{!isLoading ? "Sign in" : "loading..."} </Button>
           </div>
         </form>

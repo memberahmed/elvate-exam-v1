@@ -29,10 +29,7 @@ export default function RootLayout({
       <body
         className={`${poppins.className} dark:bg-gray-800 text-gray-900  transition-colors duration-500  antialiased`}
       >
-        <Providers>
-          {children}
-         
-        </Providers>
+        <Providers>{children}</Providers>
         <Toaster />
       </body>
     </html>

@@ -4,7 +4,7 @@ import { JSON_HEADER } from "../constants/api.contstans";
 
 const baseUrl = process.env.API + "/auth/forgotPassword";
 
-export default async function enterEmail(userData: EmailForm) {
+export async function enterEmail(userData: EmailForm) {
   const response = await fetch(baseUrl, {
     method: "POST",
     headers: {

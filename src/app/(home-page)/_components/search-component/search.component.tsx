@@ -1,4 +1,3 @@
-import Button from "@/components/common/buttons/buttons";
 import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
 
@@ -19,7 +18,7 @@ export default function SearchComponent() {
         {/* Profile and button image */}
         <div className="flex items-center justify-between gap-x-4 pe-3">
           {/* Button to start the exam */}
-          <button className=" px-4 py-2 min-w-[150px] h-14 bg-indigo-500  rounded-full">
+          <button className=" px-4 py-2 min-w-[150px] h-10 bg-mainColor text-white rounded-full">
             Start Quiz
           </button>
           <div className="relative w-10 h-10 rounded-full">

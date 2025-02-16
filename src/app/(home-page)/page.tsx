@@ -1,9 +1,10 @@
 import Profile from "./_components/profile/profile";
 import SearchComponent from "./_components/search-component/search.component";
 import Subjects from "./_components/subjucts/subjucts";
-import { Suspense } from "react";
 
 export default async function Home() {
+  // const query = `/products?sort=-sold${searchParams.category ? `&category=${searchParams.category}` : ""}`;
+
   return (
     <>
       <main>
@@ -12,9 +13,7 @@ export default async function Home() {
         {/* Profile section */}
         <Profile />
         {/* Subjucts section */}
-        <Suspense fallback={<p>loading....</p>}>
-          <Subjects />
-        </Suspense>
+        <Subjects />
       </main>
     </>
   );

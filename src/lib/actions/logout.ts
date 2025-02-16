@@ -3,8 +3,9 @@
 import { decode } from "next-auth/jwt";
 import { AUTHCOOKIES } from "../constants/token-cookies.constant";
 import { cookies } from "next/headers";
+import { JSON_HEADER } from "../constants/api.contstans";
 
-export default async function userLogOut() {
+export async function userLogOut() {
   const baseUrl = process.env.API + "/auth/logout";
   // Coockies token from next auth
   const tokenCookies = cookies().get(AUTHCOOKIES)?.value;
@@ -16,7 +17,8 @@ export default async function userLogOut() {
   });
   const response = await fetch(baseUrl, {
     headers: {
-      token: token?.accesToken || "",
+      ...JSON_HEADER,
+      token: token?.accessToken || "",
     },
   });
   const payload: ApiResponse<LogOutResponse> = await response.json();

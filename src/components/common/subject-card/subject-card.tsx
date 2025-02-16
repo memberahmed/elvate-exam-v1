@@ -1,6 +1,8 @@
-// components/common/subject-card/subject-card.tsx
+"use client";
+
 import Image from "next/image";
-import * as motion from "motion/react-client";
+import { motion } from "motion/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type SubjectCardProps = {
   subject: Subject;
@@ -13,22 +15,25 @@ const variants = {
   visible: { opacity: 1 },
 };
 
-export default function SubjectCard({
-  subject,
-  index,
-  animate = false,
-}: SubjectCardProps) {
+export default function SubjectCard({ subject, index, animate = false }: SubjectCardProps) {
+  // Navigation
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Functions
+  const handClick = (subjectId: string) => {
+    const searchQuery = new URLSearchParams(searchParams);
+
+    searchQuery.set("subject", subjectId);
+
+    router.replace(`/exams?${searchQuery.toString()}`);
+  };
+
   // This is the inner content that both animated and static versions will share.
   const content = (
     <>
-      <div className="relative w-full sm:w-72 md:w-[330px] h-48 sm:h-64 lg:h-72">
-        <Image
-          className="rounded-lg object-cover"
-          src={subject.icon}
-          alt={subject.name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
+      <div className="relative w-full  md:w-[330px] h-48 sm:h-64 lg:h-72">
+        <Image className="rounded-lg object-cover" src={subject.icon} alt={subject.name} fill sizes="100%" />
       </div>
       <div className="font-bold text-sm rounded-xl absolute bottom-7 right-7 left-7 p-4 bg-[#1935ca]/40 backdrop-blur-xl text-white">
         <h3>{subject.name}</h3>
@@ -41,22 +46,27 @@ export default function SubjectCard({
   if (animate) {
     return (
       <motion.div
+        onClick={() => handClick(subject._id)}
         variants={variants}
         initial="hidden"
         animate="visible"
         transition={{
           delay: 0.25 * index,
           ease: "easeInOut",
-          duration: 0.25,
+          duration: 0.5,
         }}
         viewport={{ amount: 0 }}
         whileInView={{ opacity: 1 }}
-        className="relative w-full"
+        className="relative w-full cursor-pointer"
       >
         {content}
       </motion.div>
     );
   }
   // If no animations
-  return <div className="relative w-full">{content}</div>;
+  return (
+    <div onClick={() => handClick(subject._id)} className="relative w-full cursor-pointer">
+      {content}
+    </div>
+  );
 }

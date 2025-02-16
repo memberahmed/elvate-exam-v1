@@ -16,7 +16,6 @@ export default function ForgotPasswordProvider({
   const [userEmail, setUserEmail] = useState<EmailForm>({ email: "" });
 
   // functions
-
   // move to the step of the forgot password process
   const handlNextStep = () => {
     setCurrentStep((prev) => prev + 1);
@@ -28,7 +27,7 @@ export default function ForgotPasswordProvider({
 
   // the getUserEamil  is to get user emil to resend the email again to the backend
 
-  function getUserEamil(userEmail : EmailForm ) {
+  function getUserEamil(userEmail: EmailForm) {
     setUserEmail(userEmail);
   }
   return (
